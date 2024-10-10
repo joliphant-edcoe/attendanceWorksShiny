@@ -4,3 +4,5 @@ jinja2
 matplotlib
 seaborn
 python-dotenv
+bcrypt
+PyGithub

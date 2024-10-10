@@ -3,6 +3,217 @@ import matplotlib.ticker as mtick
 import seaborn as sns
 import datetime as dt
 import numpy as np
+import pandas as pd
+
+
+def grade_3yr_charts(input_data):
+    fig, ax = plt.subplots()
+    rows = len(input_data)
+    data1 = input_data.iloc[: rows // 3, 5].rename("2024-25")
+    data2 = input_data.iloc[rows // 3 : 2 * rows // 3, 5].rename("2023-24")
+    data3 = input_data.iloc[2 * rows // 3 :, 5].rename("2022-23")
+    plotdata = pd.concat(
+        [data3, data2, data1],
+        axis=1,
+    ).iloc[:-1]
+    plotdata.plot(
+        kind="bar",
+        ax=ax,
+        color=["#d9aca9","#c1504c","#9e403e"]
+    )
+    ax.grid(axis='y')
+    ax.tick_params(axis="x", labelrotation=0)
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter(1.0, 0))
+    ax.set_title("Percentage of Students with Moderate or Severe Chronic Absence Over Time, by Grade Level")
+    for i in range(len(plotdata)):
+        y1 = plotdata.iloc[i, 0]
+        y2 = plotdata.iloc[i, 1]
+        y3 = plotdata.iloc[i, 2]
+
+        ax.text(
+            i - 0.17,
+            y1 ,
+            "{0:.1%}".format(y1),
+            ha="center",
+        )
+        ax.text(
+            i,
+            y2 ,
+            "{0:.1%}".format(y2),
+            ha="center",
+        )
+        ax.text(
+            i + 0.17,
+            y3 ,
+            "{0:.1%}".format(y3),
+            ha="center",
+        )
+
+
+def notif_grade_plot(input_data):
+    fig, ax = plt.subplots()
+    plotdata = input_data.iloc[:-1, [3, 5, 7, 9]]
+    plotdata.plot(
+        kind="bar",
+        stacked=True,
+        ax=ax,
+        color=["#e6b8b7", "#b8cce4", "#95b3d7", "#366092"],
+    )
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter(1.0, 0))
+    for i in range(len(plotdata)):
+        noNotif = plotdata["No Notifications PERCENT"].iloc[i]
+        letterOnly = plotdata["Excessive Absence Letter (only) PERCENT"].iloc[i]
+        noticeOnly = plotdata["Notice of Truancy (only) PERCENT"].iloc[i]
+        both = plotdata[
+            "BOTH: Excessive Absence Letter AND Notice of Truancy PERCENT"
+        ].iloc[i]
+
+        fontsz = -0.5 * len(plotdata) + 14
+        ax.text(
+            i,
+            noNotif / 2,
+            "{0:.1%}".format(noNotif),
+            fontsize=fontsz,
+            ha="center",
+        )
+        ax.text(
+            i,
+            noNotif + letterOnly / 2,
+            "{0:.1%}".format(letterOnly),
+            fontsize=fontsz,
+            ha="center",
+        )
+        ax.text(
+            i,
+            noNotif + letterOnly + noticeOnly / 2,
+            "{0:.1%}".format(noticeOnly),
+            fontsize=fontsz,
+            ha="center",
+        )
+        ax.text(
+            i,
+            noNotif + letterOnly + noticeOnly + both / 2,
+            "{0:.1%}".format(both),
+            fontsize=fontsz,
+            ha="center",
+        )
+
+
+def notif_grade_plot2(input_data):
+    fig, ax = plt.subplots()
+    plotdata = input_data.iloc[:-1, [3, 5, 7, 9]]
+    plotdata.plot(
+        kind="bar",
+        stacked=True,
+        ax=ax,
+        color=["#ffff99", "#d8e4bc", "#c4d79b", "#9bbb59"],
+    )
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter(1.0, 0))
+    for i in range(len(plotdata)):
+        zeroNOT = plotdata["PERCENT Zero NOTs"].iloc[i]
+        oneNOT = plotdata["PERCENT One NOT"].iloc[i]
+        twoNOT = plotdata["PERCENT Two Notices"].iloc[i]
+        threeNOT = plotdata["PERCENT Three or More"].iloc[i]
+
+        fontsz = -0.5 * len(plotdata) + 14
+        ax.text(
+            i,
+            zeroNOT / 2,
+            "{0:.1%}".format(zeroNOT),
+            fontsize=fontsz,
+            ha="center",
+        )
+        ax.text(
+            i,
+            zeroNOT + oneNOT / 2,
+            "{0:.1%}".format(oneNOT),
+            fontsize=fontsz,
+            ha="center",
+        )
+        ax.text(
+            i,
+            zeroNOT + oneNOT + twoNOT / 2,
+            "{0:.1%}".format(twoNOT),
+            fontsize=fontsz,
+            ha="center",
+        )
+        ax.text(
+            i,
+            zeroNOT + oneNOT + twoNOT + threeNOT / 2,
+            "{0:.1%}".format(threeNOT),
+            fontsize=fontsz,
+            ha="center",
+        )
+
+
+def notif_grade_plot3(input_data):
+    fig, ax = plt.subplots()
+    plotdata = input_data.iloc[:-1, 2]
+    plotdata.plot(kind="bar", ax=ax, color=["#f79443"])
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter(1.0, 1))
+    for i in range(len(plotdata)):
+        excess = plotdata.iloc[i]
+
+        fontsz = -0.5 * len(plotdata) + 14
+        ax.text(
+            i,
+            excess / 2,
+            "{0:.1%}".format(excess),
+            fontsize=fontsz,
+            ha="center",
+        )
+
+
+def notification_plot(input_data):
+    fig, ax = plt.subplots()
+    plotdata = input_data.iloc[0, [2, 4, 6, 8]]
+    keys = [
+        "No Notifications",
+        "Excessive Absence Letter",
+        "Notice of Truancy",
+        "BOTH Excessive Letter and Notice of Truancy",
+    ]
+    numbers = plotdata.tolist()
+    plt.pie(
+        numbers,
+        labels=keys,
+        colors=["#e6b8b7", "#b8cce4", "#95b3d7", "#366092"],
+        autopct="%.1f%%",
+    )
+
+
+def notification_plot2(input_data):
+    fig, ax = plt.subplots()
+    plotdata = input_data.iloc[0, [1, 3, 5, 7]]
+    keys = ["Zero NOTs", "One Notice", "Two Notices", "Three or More Notices"]
+    numbers = plotdata.tolist()
+    plt.pie(
+        numbers,
+        labels=keys,
+        colors=["#ffff99", "#d8e4bc", "#c4d79b", "#9bbb59"],
+        autopct="%.1f%%",
+    )
+    ax.set_title(
+        "What percentage of chronically absent students were sent Notices of Truancy?"
+    )
+
+
+def notification_plot3(input_data):
+    fig, ax = plt.subplots()
+    print(input_data)
+    plotdata = input_data.iloc[0, [1, 3]]
+    keys = ["No Excessive Letter", "Excessive Letter Sent"]
+    numbers = plotdata.tolist()
+    plt.pie(
+        numbers,
+        labels=keys,
+        colors=["#fcd5b5", "#e46c0a"],
+        autopct="%.1f%%",
+    )
+    ax.set_title(
+        "What percentage of chronically absent students were sent an excessive absence letter?"
+    )
+
 
 def label_days(ax, dates, i, j, calendar, pct=False):
     ni, nj = calendar.shape
@@ -98,9 +309,6 @@ def heatmap_plot(plotdata):
     ax.set_title("% Absent Per Day")
 
 
-
-
-
 def label_plot(plotdata, ax, fmt_string, fntsize=8):
     for i in range(len(plotdata)):
         excused_pct = plotdata.Excused.iloc[i]
@@ -132,7 +340,7 @@ def label_plot(plotdata, ax, fmt_string, fntsize=8):
             )
 
 
-def absence_grade_charts(input_data, title, label_rot=0,ha='center',label_bars=True):
+def absence_grade_charts(input_data, title, label_rot=0, ha="center", label_bars=True):
     plotdata = input_data.rename(
         index={
             "Chronically Absent": "Chronic",
@@ -155,7 +363,7 @@ def absence_grade_charts(input_data, title, label_rot=0,ha='center',label_bars=T
     )
     ax.grid(axis="y")
     ax.tick_params(axis="x", labelrotation=label_rot)
-    if ha != 'center':
+    if ha != "center":
         plt.setp(ax.get_xticklabels(), ha=ha, rotation_mode="anchor")
     ymin, ymax = ax.get_ylim()
     ax.set_ylim([ymin, ymax * 1.05])
